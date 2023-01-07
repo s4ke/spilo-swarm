@@ -46,7 +46,7 @@ x-etcd_template: &etcd_template
     ETCD_INITIAL_CLUSTER_STATE: new
     ETCD_INITIAL_CLUSTER_TOKEN: s3cr3t-t0k3n  # define a secret token here
   networks:
-    - pgpool-network
+    - etcd-network
 
 # spilo template for 3-node cluster
 x-spilo_template: &spilo_template
@@ -79,11 +79,6 @@ x-spilo_template: &spilo_template
       target: /dev/shm
       tmpfs:
         size: 512000000 # This will increase shared memory of container to 512MB, a good value for postgres
-  networks:
-    - pgpool-network
-  {% for elem in spilo_extra_networks | default([]) %}
-    - {{ elem.name }}
-  {% endfor %}
   stop_grace_period: 15m # gives time to container gracefully shutdown in case of SIGTERM
   healthcheck:
     test: pg_isready || exit 1
@@ -147,6 +142,12 @@ services:
       - <<: *spilo_tmpfs
       - spilo_1_data:/home/postgres/pgdata
     hostname: spilo1
+    networks:
+      pgpool-network:
+      etcd-network:
+  {% for elem in spilo_extra_networks | default([]) %}
+      {{ elem.name }}:
+  {% endfor %}
 
   spilo2:
     <<: *spilo_template
@@ -155,6 +156,12 @@ services:
       - <<: *spilo_tmpfs
       - spilo_2_data:/home/postgres/pgdata
     hostname: spilo2
+    networks:
+      pgpool-network:
+      etcd-network:
+  {% for elem in spilo_extra_networks | default([]) %}
+      {{ elem.name }}:
+  {% endfor %}
 
   spilo3:
     <<: *spilo_template
@@ -163,6 +170,12 @@ services:
       - <<: *spilo_tmpfs
       - spilo_3_data:/home/postgres/pgdata 
     hostname: spilo3
+    networks:
+      pgpool-network:
+      etcd-network:
+  {% for elem in spilo_extra_networks | default([]) %}
+      {{ elem.name }}:
+  {% endfor %}
 
   pgpool:
     image: gabemocan/swarm:pgpool-4
@@ -249,6 +262,7 @@ networks:
   pgpool-network:
   # this external network will be used by apps/clients to connect to the postgres cluster
   pgbouncer-network:
+  etcd-network:
   {% for elem in spilo_extra_networks | default([]) %}
   {{ elem.name }}:
     external: true
