@@ -45,6 +45,8 @@ x-etcd_template: &etcd_template
     ETCD_INITIAL_CLUSTER: etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
     ETCD_INITIAL_CLUSTER_STATE: new
     ETCD_INITIAL_CLUSTER_TOKEN: s3cr3t-t0k3n  # define a secret token here
+  networks:
+    - pgpool-network
 
 # spilo template for 3-node cluster
 x-spilo_template: &spilo_template
