@@ -59,6 +59,7 @@ x-spilo_template: &spilo_template
     SPILO_PROVIDER: "local"
     ENABLE_PG_MON: "true"
     INITDB_LOCALE: en_US # Set accordingly 
+    PGPASSWORD_ADMIN: "myadminpassword"
     SPILO_CONFIGURATION: # Custom pg_hba.conf file
       "{postgresql: 
         {pg_hba: [local all all trust,
@@ -117,6 +118,7 @@ services:
     volumes:
       - etcd_1_data:/home/postgres/etcd1.etcd
     command: etcd -name etcd1 -initial-advertise-peer-urls http://etcd1:2380
+    hostname: etcd1
 
   etcd2:
     <<: *etcd_template
@@ -124,6 +126,7 @@ services:
     volumes:
       - etcd_2_data:/home/postgres/etcd2.etcd
     command: etcd -name etcd2 -initial-advertise-peer-urls http://etcd2:2380
+    hostname: etcd2
 
   etcd3:
     <<: *etcd_template
@@ -131,6 +134,7 @@ services:
     volumes:
       - etcd_3_data:/home/postgres/etcd3.etcd
     command: etcd -name etcd3 -initial-advertise-peer-urls http://etcd3:2380
+    hostname: etcd3
 
   spilo1:
     <<: *spilo_template
