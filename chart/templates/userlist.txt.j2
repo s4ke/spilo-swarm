@@ -1,0 +1,3 @@
+{% for pgbouncer_user in pgbouncer_users %}
+"{{ pgbouncer_user.username }}" "{{ pgbouncer_user.password }}"
+{% endfor %}

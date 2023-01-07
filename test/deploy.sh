@@ -1,0 +1,1 @@
+nothelm run deploy --project-dir ../chart --values values.yaml

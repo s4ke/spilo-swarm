@@ -1,0 +1,1 @@
+docker-sdp stack deploy -c minio.yml minio_spilo_test
