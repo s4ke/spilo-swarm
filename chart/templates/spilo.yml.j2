@@ -224,10 +224,8 @@ services:
 configs:
   pgbouncer-conf: # database access are defined in this .ini
     file: ./pgbouncer.ini
-    name: pgbouncer-conf
   pgbouncer-userlist: # pgbouncer userlist (which clients will use to connect) is defined in this .txt
     file: ./userlist.txt
-    name: pgbouncer-userlist
 
 volumes:
   # it is prudent to store etcd volumes on external volumes just to facilitate node returnal in case of disaster i.e server loss
@@ -243,4 +241,7 @@ networks:
   pgpool-network:
   # this external network will be used by apps/clients to connect to the postgres cluster
   pgbouncer-network:
+  {% for elem in spilo_extra_networks | default([]) %}
+  {{ elem.name }}:
     external: true
+  {% endfor %}
